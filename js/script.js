@@ -19,7 +19,7 @@ handleJobRole = () => {
 };
 handleTshirtMenu = () => {
     // Make the first dropdown menu option unselectable
-    $("select option:first-child").prop('disabled', true);
+    $("#design option:first-child").prop('disabled', true);
     // Hide color label and menu initially
     $('#colors-js-puns').hide();
 
@@ -85,7 +85,7 @@ handlePaymentInfo = () => {
     const bitcoinDiv = paypalDiv.next();
 
     // Display the creditcard div by default and hide the others. Disable the title option on the select dropdown
-    $("select option:first-child").prop('disabled', true);
+    $("#payment option:first-child").prop('disabled', true);
     paypalDiv.hide();
     bitcoinDiv.hide();
 
