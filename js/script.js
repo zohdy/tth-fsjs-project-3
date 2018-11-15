@@ -119,7 +119,6 @@ handleValidation = () => {
     const emailField = $("#mail");
     let isEmailValid = false;
     emailField.on('keypress keydown keyup', function () {
-        // Regex pattern borrowed from https://stackoverflow.com/a/9082446
         if(!$(this).val().match(regexEmail) || $(this).val().trim().length < 1){
             if(!$(this).next().hasClass('error')){
                 $('#mail').after('<div class="error">Email must be valid e.g. "john@doe.com"</div>');
