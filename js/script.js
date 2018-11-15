@@ -3,7 +3,7 @@ $(document).ready(() => {
     $('input').first().focus();
     handleJobRole();
     handleTshirtMenu();
-    handleActivitiesRegister();
+    handleActivitiesReg();
     handlePaymentInfo();
     handleValidation();
     removeErrorMessageOnFocus();
@@ -14,47 +14,34 @@ handleJobRole = () => {
     $('#other-title').hide();
     // Show input-field if checkbox option 'other' is selected.
     $('#title').change(() => {
-        const selectedOption = $('#title option:selected').text();
-        if(selectedOption === 'Other'){
-            $('#other-title').show();
-        } else {
-            $('#other-title').hide();
-        }
+        $('#title').val() === 'other' ? $('#other-title').show() : $('#other-title').hide();
     });
 };
 handleTshirtMenu = () => {
     // Make the first dropdown menu option unselectable
-    $("select option:contains('Select Theme')").prop('disabled', true);
+    $("select option:first-child").prop('disabled', true);
     // Hide color label and menu initially
     $('#colors-js-puns').hide();
 
-    $('#design').change(() => {
-        // Show color label and menu after t-shirt is selected
-        $('#colors-js-puns').show();
+    $('#design').change(function(){
         // If the first menu option in the 'design' select-box is selected.
-        if ($('#design option:eq(1)').is(':selected')) {
+        if ($('#design').val() === 'js puns') {
             // Loop through the items in the 'color' select-box and only display the first 3
             $('#color > option').each((colIndex, colElm) => {
-                if(colIndex > 2){
-                    $(colElm).hide();
-                } else {
-                    $(colElm).show();
-                }
+                colIndex > 2 ? $(colElm).hide() : $(colElm).show();
             });
         } else {
-            // Else only display the last 3
+            // Only display the last 3
             $('#color > option').each((colIndex, colElm) => {
-                if(colIndex < 3){
-                    $(colElm).hide();
-                } else {
-                    $(colElm).show();
-                }
+                colIndex < 3 ? $(colElm).hide() : $(colElm).show();
             });
         }
+        // Show color label and menu after t-shirt is selected
+        $('#colors-js-puns').show();
     });
 };
 
-handleActivitiesRegister = () => {
+handleActivitiesReg = () => {
     let total = 0;
 
     $('.activities input').click(function() {
@@ -63,11 +50,8 @@ handleActivitiesRegister = () => {
             .text()
             .match(/\$[0-9]+/)[0]
             .replace('$', ''));
-        if ($(this).prop('checked')) {
-            total += price;
-        } else {
-            total -= price;
-        }
+        $(this).prop('checked') ? total += price : total -= price;
+
         // Remove the element first, to avoid re-appending for each click event
         $('.total-price').remove();
         $('.activities').append(`<h3 class="total-price">Total: \$${total}</h3>`);
@@ -101,7 +85,7 @@ handlePaymentInfo = () => {
     const bitcoinDiv = paypalDiv.next();
 
     // Display the creditcard div by default and hide the others. Disable the title option on the select dropdown
-    $("select option:contains('Select Payment Method')").prop('disabled', true);
+    $("select option:first-child").prop('disabled', true);
     paypalDiv.hide();
     bitcoinDiv.hide();
 
@@ -125,12 +109,18 @@ handlePaymentInfo = () => {
 
 
 handleValidation = () => {
+    // Regex pattern from 'https://andrewwoods.net/blog/2018/name-validation-regex/'
+    const regexEmail = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
+    const regexCVV = /^\d{3}$/;
+    const regexZip = /\d{5}/;
+    const regexCCNum = /^\d{13,16}$/;
+
     // Realtime email validation
     const emailField = $("#mail");
     let isEmailValid = false;
     emailField.on('keypress keydown keyup', function () {
         // Regex pattern borrowed from https://stackoverflow.com/a/9082446
-        if(!$(this).val().match(/^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/) || $(this).val().trim().length < 1){
+        if(!$(this).val().match(regexEmail) || $(this).val().trim().length < 1){
             if(!$(this).next().hasClass('error')){
                 $('#mail').after('<div class="error">Email must be valid e.g. "john@doe.com"</div>');
             }
@@ -150,7 +140,6 @@ handleValidation = () => {
        // to avoid elm duplication
        $('.error').remove();
 
-       // Regex pattern from 'https://andrewwoods.net/blog/2018/name-validation-regex/'
        if(nameField.trim().length < 1) {
            $('#name').after('<div class="error">Name must be valid</div>');
            return false;
@@ -170,16 +159,16 @@ handleValidation = () => {
        if($('#payment').val() === 'credit card'){
            if (credCardNum.trim().length < 1){
                $('#cc-num').after('<div class="error">Card Number can not be empty</div>');
-               return false;
-           } else if(!/^\d{13,16}$/.test(credCardNum)) {
-               $('#cc-num').after('<div class="error">Card Number must contain 13-16 digits</div>');
-               return false;
-           }
-           if (!/\d{5}/.test(credCardZip)){
+                    return false;
+               } else if(!regexCCNum.test(credCardNum)) {
+                   $('#cc-num').after('<div class="error">Card Number must contain 13-16 digits</div>');
+                    return false;
+               }
+           if (!regexZip.test(credCardZip)){
                $('#zip').after('<div class="error">Zip Code must contain at least 5-digits</div>');
                return false
            }
-           if (!/^\d{3}$/.test(credCardCVV)){
+           if (!regexCVV.test(credCardCVV)){
                $('#cvv').after('<div class="error">CVV must be a 3-digit number</div>');
                return false
            }
