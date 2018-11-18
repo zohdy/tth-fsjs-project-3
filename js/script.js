@@ -42,40 +42,40 @@ handleTshirtMenu = () => {
 };
 
 handleActivitiesReg = () => {
-    let total = 0;
 
-    $('.activities input').click(function() {
+    let total = 0;
+    $('.activities input').on('click', e => {
         // Get the price from the corresponding labels text and format it
-        let price = parseInt($(this).parent()
-            .text()
+        let price = parseInt(e.target.parentElement
+            .innerHTML
             .match(/\$[0-9]+/)[0]
             .replace('$', ''));
-        $(this).prop('checked') ? total += price : total -= price;
+        e.target.checked ? total += price : total -= price;
 
         // Remove the element first, to avoid re-appending for each click event
         $('.total-price').remove();
         $('.activities').append(`<h3 class="total-price">Total: \$${total}</h3>`);
-
-        switch ($(this).attr('name')) {
+        switch (e.target.name) {
                 case 'js-frameworks':
-                    updateRegistrationFields('express');
+                    updateRegistrationFields(e, 'express');
                     break;
                 case 'js-libs':
-                    updateRegistrationFields('node');
+                    updateRegistrationFields(e, 'node');
                     break;
                 case 'express':
-                    updateRegistrationFields('js-frameworks');
+                    updateRegistrationFields(e, 'js-frameworks');
                     break;
                 case 'node':
-                    updateRegistrationFields('js-libs');
+                    updateRegistrationFields(e, 'js-libs');
                     break;
             }
         });
      // Helper method to change property values based on the clicked checkbox
-     const updateRegistrationFields = (name) => {
-        $('input[name='+ name +']').prop('disabled', event.currentTarget.checked);
-        $("input:disabled").parents('label').css('color', 'grey');
-        $("input:enabled").parents('label').css('color', '#000');
+     const updateRegistrationFields = (e, name) => {
+         console.log(e.target);
+         $('input[name='+ name +']').prop('disabled', e.target.checked);
+         $("input:disabled").parents('label').css('color', 'grey');
+         $("input:enabled").parents('label').css('color', '#000');
     }
 };
 
