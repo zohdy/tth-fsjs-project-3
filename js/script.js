@@ -86,6 +86,7 @@ handlePaymentInfo = () => {
 
     // Display the creditcard div by default and hide the others. Disable the title option on the select dropdown
     $("#payment option:first-child").prop('disabled', true);
+    $("#payment").val('credit card');
     paypalDiv.hide();
     bitcoinDiv.hide();
 
@@ -130,7 +131,7 @@ handleValidation = () => {
     });
 
    $('form').submit(function(){
-       event.preventDefault();
+       // Todo Change these duplicated selectors...
        const nameField = $("#name").val().trim();
        const credCardNum = $('#cc-num').val().trim();
        const credCardZip = $('#zip').val().trim();
@@ -172,7 +173,7 @@ handleValidation = () => {
                return false
            }
        }
-       alert('Form submitted!');
+       alert('Form submitted successfully!');
    });
 };
 removeErrorMessageOnFocus = () => {
